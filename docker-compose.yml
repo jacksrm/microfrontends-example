@@ -1,0 +1,62 @@
+version: "3"
+services:
+  root-config:
+    container_name: root-config
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_APP_NAME=root-config
+        - BUILD_WORKSPACE_NAME=packages
+    ports:
+      - "9000:80"
+  header:
+    container_name: header
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_APP_NAME=header
+        - BUILD_WORKSPACE_NAME=packages
+    ports:
+      - "9001:80"
+  storage-module:
+    container_name: storage-module
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_APP_NAME=storage-module
+        - BUILD_WORKSPACE_NAME=shared
+    ports:
+      - "9002:80"
+  home:
+    container_name: home
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_APP_NAME=home
+        - BUILD_WORKSPACE_NAME=packages
+    ports:
+      - "9003:80"
+  cart:
+    container_name: cart
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_APP_NAME=cart
+        - BUILD_WORKSPACE_NAME=packages
+    ports:
+      - "9004:80"
+  product:
+    container_name: product
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_APP_NAME=product
+        - BUILD_WORKSPACE_NAME=packages
+    ports:
+      - "9005:80"

@@ -1,0 +1,14 @@
+{
+  "name": "@cotec/test-single-spa",
+  "author": "Teste",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "shared/*"
+  ],
+  "scripts": {
+    "start": "yarn workspaces run start",
+    "build": "yarn workspaces run build"
+  }
+}
