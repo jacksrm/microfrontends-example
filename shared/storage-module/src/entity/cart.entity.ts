@@ -2,7 +2,7 @@ import { CART_UPDATED } from '../test-storage-module';
 import { CartItem, Product } from '../types';
 
 class Cart {
-  private _cart: CartItem[] | null = null;
+  private _cart: CartItem[] | null;
 
   constructor() {
     this._cart = JSON.parse(localStorage.getItem('cart') ?? null);
@@ -36,7 +36,7 @@ class Cart {
       quantity: item.quantity + 1,
     };
     this.cart = this._cart.map((itemCart) =>
-      itemCart.product.id === product.id ? updatedItem : itemCart,
+      itemCart.product.id === product.id ? updatedItem : itemCart
     );
   }
 
@@ -63,7 +63,7 @@ class Cart {
     };
 
     this.cart = this._cart.map((itemCart) =>
-      itemCart.product.id === product.id ? updatedItem : itemCart,
+      itemCart.product.id === product.id ? updatedItem : itemCart
     );
   }
 
