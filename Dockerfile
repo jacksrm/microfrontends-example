@@ -4,6 +4,7 @@ ARG BUILD_WORKSPACE_NAME
 WORKDIR /build
 COPY package.json .
 COPY yarn.lock .
+COPY lerna.json .
 COPY ./$BUILD_WORKSPACE_NAME/$BUILD_APP_NAME ./$BUILD_WORKSPACE_NAME/$BUILD_APP_NAME
 RUN yarn install --network-timeout 1000000
 RUN yarn build
