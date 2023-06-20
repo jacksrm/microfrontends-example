@@ -6,6 +6,12 @@ In this project, the objective was to learn how to use Single-SPA Layout Engine,
 
 Each microfrontend app was built with NodeJS and served with a NGINX Server.
 
-## How to run
+## How to run (dev)
 - Clone the repo in your machine
-- 
+- Run the command `yarn` to install the dependencies
+- Run `yarn start` to run the project
+
+## How to run (build with docker)
+- Clone the repo in your machine
+- In the terminal run `docker compose up -d` to build
+- Access `http://localhost:9000` to access the app.
