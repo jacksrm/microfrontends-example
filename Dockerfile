@@ -1,17 +1,19 @@
-FROM node:lts-alpine as build
+FROM node:lts-alpine as pre-build
+RUN npm i -g pnpm
+
+FROM pre-build as build
 ARG BUILD_APP_NAME
 ARG BUILD_WORKSPACE_NAME
 WORKDIR /build
 COPY package.json .
-COPY yarn.lock .
-COPY lerna.json .
+COPY pnpm-lock.yaml .
+COPY pnpm-workspace.yaml .
 COPY ./$BUILD_WORKSPACE_NAME/$BUILD_APP_NAME ./$BUILD_WORKSPACE_NAME/$BUILD_APP_NAME
-RUN yarn install --network-timeout 1000000
-RUN yarn build
-
+RUN pnpm install 
+RUN pnpm build
 
 # COPY . /usr/share/nginx/html
-FROM nginx:alpine
+FROM nginx:alpine as deploy
 ARG BUILD_APP_NAME
 ARG BUILD_WORKSPACE_NAME
 RUN rm -v /etc/nginx/conf.d/default.conf

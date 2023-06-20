@@ -3,15 +3,8 @@
   "author": "Teste",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "shared/*"
-  ],
   "scripts": {
-    "start": "yarn lerna run start",
-    "build": "yarn lerna run build"
-  },
-  "dependencies": {
-    "lerna": "^7.0.2"
+    "start": "pnpm -f start",
+    "build": "pnpm -f build"
   }
 }
