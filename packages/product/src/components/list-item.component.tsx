@@ -1,8 +1,7 @@
 import {
-  ADD_CART,
+  Events,
   Product,
-  REMOVE_PRODUCTS,
-  dispatchCustomEvent,
+  send,
   // @ts-ignore
 } from '@test/storage-module';
 import { FiX } from 'react-icons/fi';
@@ -11,26 +10,24 @@ type ListItemProps = {
   product: Product;
 };
 
-const EVENT_ID = '@test/product/components/list-item';
-
 export default function ListItem(props: ListItemProps) {
   const handleDeleteProduct = () => {
     const response = confirm('Remove this product from list?');
 
     if (!response) return;
 
-    dispatchCustomEvent(REMOVE_PRODUCTS, {
-      id: EVENT_ID,
+    send({
+      topic: Events.REMOVE_PRODUCTS,
+      id: Date.now(),
       payload: props.product,
     });
   };
 
   const handleAddToCart = () => {
-    const product = { ...props.product };
-
-    dispatchCustomEvent(ADD_CART, {
-      id: EVENT_ID,
-      payload: product,
+    send({
+      topic: Events.ADD_CART,
+      id: Date.now(),
+      payload: props.product,
     });
   };
 

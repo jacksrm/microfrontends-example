@@ -8,6 +8,8 @@ import {
   PRODUCTS_UPDATED,
   ProductList,
   dispatchCustomEvent,
+  Events,
+  send,
   // @ts-ignore
 } from '@test/storage-module';
 import { AppProps } from 'single-spa';
@@ -26,8 +28,14 @@ export default function Root(props: RootProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    dispatchCustomEvent(ADD_PRODUCTS, {
-      id: EVENT_ID,
+    // dispatchCustomEvent(ADD_PRODUCTS, {
+    //   id: EVENT_ID,
+    //   payload: { id, name, price, description },
+    // });
+
+    send({
+      topic: Events.ADD_PRODUCTS,
+      id: Date.now(),
       payload: { id, name, price, description },
     });
   };

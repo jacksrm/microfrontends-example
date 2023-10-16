@@ -1,12 +1,12 @@
 import {
-  CART_UPDATED,
   Cart,
-  EventPayload,
-  LIST_CART,
-  LIST_CART_RESPONSE,
+  CartItem,
+  Events,
+  MfNames,
   Product,
-  REMOVE_CART,
-  dispatchCustomEvent,
+  getObservable,
+  send,
+  BehaviorSubject,
   // @ts-ignore
 } from '@test/storage-module';
 import { useEffect, useState } from 'react';
@@ -21,35 +21,23 @@ export default function Root(props: RootProps) {
   const [cart, setCart] = useState<Cart>(null);
 
   const handleDeleteButtonClick = (product: Product) => {
-    dispatchCustomEvent(REMOVE_CART, { id: EVENT_ID, payload: product });
+    send({
+      topic: Events.REMOVE_CART,
+      id: Date.now(),
+      payload: product,
+    });
   };
 
   useEffect(() => {
-    const listCartResponseEventListener = (
-      event: CustomEvent<EventPayload<Cart>>
-    ) => {
-      const { id, payload } = event.detail;
-
-      if (id !== EVENT_ID) return;
-
-      setCart(payload);
-    };
-
-    const cartUpdatedResponseEventListener = (event: CustomEvent<Cart>) => {
-      const { detail: payload } = event;
-
-      setCart(payload);
-    };
-
-    addEventListener(LIST_CART_RESPONSE, listCartResponseEventListener);
-    addEventListener(CART_UPDATED, cartUpdatedResponseEventListener);
-
-    dispatchCustomEvent(LIST_CART, { id: EVENT_ID, payload: null });
+    const cart$ = getObservable(MfNames.MF_CART) as BehaviorSubject<CartItem[]>;
+    const sub = cart$.subscribe({
+      next(cart: CartItem[]) {
+        setCart(cart);
+      },
+    });
 
     return () => {
-      removeEventListener(LIST_CART_RESPONSE, listCartResponseEventListener);
-
-      removeEventListener(CART_UPDATED, cartUpdatedResponseEventListener);
+      sub.unsubscribe();
     };
   }, []);
   return (
@@ -61,7 +49,6 @@ export default function Root(props: RootProps) {
         flex
         flex-col
         gap-3
-        
         p-3
       `}
       >

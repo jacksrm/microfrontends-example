@@ -1,11 +1,14 @@
-import { CART_UPDATED } from '../test-storage-module';
+import { BehaviorSubject } from 'rxjs';
 import { CartItem, Product } from '../types';
 
 class Cart {
   private _cart: CartItem[] | null;
+  readonly cart$: BehaviorSubject<CartItem[] | null>;
 
   constructor() {
     this._cart = JSON.parse(localStorage.getItem('cart') ?? null);
+    this.cart$ = new BehaviorSubject<CartItem[] | null>(this._cart);
+    this.cart$.next(this._cart);
   }
 
   get cart(): CartItem[] | null {
@@ -15,7 +18,7 @@ class Cart {
   private set cart(cart: CartItem[] | null) {
     this._cart = cart;
     this.saveToLocalStorage();
-    this.dispatchCartUpdated();
+    this.cart$.next(this._cart);
   }
 
   addToCart(product: Product) {
@@ -65,14 +68,6 @@ class Cart {
     this.cart = this._cart.map((itemCart) =>
       itemCart.product.id === product.id ? updatedItem : itemCart
     );
-  }
-
-  private dispatchCartUpdated() {
-    const event = new CustomEvent(CART_UPDATED, {
-      detail: this._cart,
-    });
-
-    dispatchEvent(event);
   }
 
   private saveToLocalStorage() {

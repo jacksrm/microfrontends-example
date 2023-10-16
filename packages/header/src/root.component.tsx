@@ -2,22 +2,17 @@ import { useContext, useEffect, useState } from 'react';
 import { SingleSpaContext } from 'single-spa-react';
 import { NavItem } from './components/nav-item.component';
 import {
-  CART_UPDATED,
+  BehaviorSubject,
   Cart,
-  EventPayload,
-  LIST_CART,
-  LIST_CART_RESPONSE,
-  dispatchCustomEvent,
+  MfNames,
+  getObservable,
   // @ts-ignore
 } from '@test/storage-module';
-import { AppProps } from 'single-spa';
 
-const EVENT_ID = '@test/header/root';
-
-type RootProps = {} & AppProps;
-
-export default function Root({ singleSpa }: RootProps) {
-  const { navigateToUrl } = singleSpa;
+export default function Root() {
+  const {
+    singleSpa: { navigateToUrl },
+  } = useContext(SingleSpaContext);
 
   const [cartQuantity, setCartQuantity] = useState<number>(0);
   const [cartTotal, setCartTotal] = useState<string>('0');
@@ -49,30 +44,16 @@ export default function Root({ singleSpa }: RootProps) {
   };
 
   useEffect(() => {
-    addEventListener(
-      LIST_CART_RESPONSE,
-      (event: CustomEvent<EventPayload<Cart>>) => {
-        const { id, payload } = event.detail;
-
-        if (id !== EVENT_ID) return;
-
-        setCartTotal(() => handleSetCartTotal(payload));
-        setCartQuantity(() => handleSetCartQuantity(payload));
-      }
-    );
-
-    addEventListener(CART_UPDATED, (event: CustomEvent<Cart>) => {
-      const { detail: payload } = event;
-
-      setCartTotal(() => handleSetCartTotal(payload));
-      setCartQuantity(() => handleSetCartQuantity(payload));
+    const cart$ = getObservable(MfNames.MF_CART) as BehaviorSubject<Cart>;
+    const subscription = cart$.subscribe({
+      next(cart: Cart) {
+        setCartTotal(() => handleSetCartTotal(cart));
+        setCartQuantity(() => handleSetCartQuantity(cart));
+      },
     });
 
-    dispatchCustomEvent(LIST_CART, { id: EVENT_ID, payload: null });
-
     return () => {
-      removeEventListener(LIST_CART_RESPONSE, () => {});
-      removeEventListener(CART_UPDATED, () => {});
+      subscription.unsubscribe();
     };
   }, []);
 
